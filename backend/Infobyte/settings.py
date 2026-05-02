@@ -52,6 +52,10 @@ INSTALLED_APPS = [
     # Local apps
     'accounts',
     'integrations',
+    'monitoring',
+    'summaries',
+    'notifications',
+    'chats',
 ]
 
 MIDDLEWARE = [
