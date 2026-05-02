@@ -1,10 +1,14 @@
+import logging
 from rest_framework import status, generics, views
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.views import TokenRefreshView
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+
+logger = logging.getLogger(__name__)
 
 from .serializers import (
     UserRegistrationSerializer,
@@ -141,14 +145,14 @@ class UserLogoutView(views.APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return Response({
+                'status': 'error',
+                'message': 'Refresh token is required'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
-            refresh_token = request.data.get('refresh')
-            if not refresh_token:
-                return Response({
-                    'status': 'error',
-                    'message': 'Refresh token is required'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            
             token = RefreshToken(refresh_token)
             token.blacklist()
             
@@ -156,11 +160,18 @@ class UserLogoutView(views.APIView):
                 'status': 'success',
                 'message': 'Logout successful'
             }, status=status.HTTP_200_OK)
-        except Exception as e:
+        except TokenError as e:
+            logger.warning(f'Token error during logout: {str(e)}')
             return Response({
                 'status': 'error',
-                'message': 'Invalid token'
+                'message': 'Invalid or expired token'
             }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f'Unexpected error during logout: {str(e)}')
+            return Response({
+                'status': 'error',
+                'message': 'An error occurred during logout'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class CustomTokenRefreshView(TokenRefreshView):
@@ -280,7 +291,7 @@ class SendVerificationEmailView(views.APIView):
         if email_sent:
             return Response({
                 'status': 'success',
-                'message': f'Verification email sent to {user.email}'
+                'message': 'Verification email sent successfully'
             }, status=status.HTTP_200_OK)
         else:
             return Response({

@@ -5,6 +5,9 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+# Constants
+EMAIL_NOT_VERIFIED = 'not_verified'
+
 
 class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
     """
@@ -16,7 +19,7 @@ class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
         Hash the user's primary key, email, and email_verified status.
         This ensures the token becomes invalid once email is verified.
         """
-        email_verified = '' if user.email_verified else 'not_verified'
+        email_verified = '' if user.email_verified else EMAIL_NOT_VERIFIED
         return f"{user.pk}{user.email}{email_verified}{timestamp}"
 
 

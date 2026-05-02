@@ -165,8 +165,9 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         instance.save()
         
         # Update profile if provided
-        if profile_data and hasattr(instance, 'profile'):
-            profile = instance.profile
+        if profile_data:
+            from .models import UserProfile
+            profile, created = UserProfile.objects.get_or_create(user=instance)
             for attr, value in profile_data.items():
                 setattr(profile, attr, value)
             profile.save()
@@ -179,7 +180,15 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     
     def validate_email(self, value):
-        """Validate email exists (but don't reveal if it doesn't for security)."""
+        """Validate email format and normalize."""
+        from django.core.validators import validate_email as django_validate_email
+        from django.core.exceptions import ValidationError
+        
+        try:
+            django_validate_email(value)
+        except ValidationError:
+            raise serializers.ValidationError("Enter a valid email address.")
+        
         return value.lower()
 
 

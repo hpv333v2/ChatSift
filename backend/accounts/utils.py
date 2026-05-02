@@ -1,8 +1,11 @@
+import logging
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from .tokens import generate_verification_token
+
+logger = logging.getLogger(__name__)
 
 
 def send_verification_email(user, request=None):
@@ -61,7 +64,7 @@ The ChatSift Team
         )
         return True
     except Exception as e:
-        print(f"Error sending verification email: {e}")
+        logger.error(f"Error sending verification email to {user.email}: {e}")
         return False
 
 
@@ -105,7 +108,7 @@ The ChatSift Team
         )
         return True
     except Exception as e:
-        print(f"Error sending welcome email: {e}")
+        logger.error(f"Error sending welcome email to {user.email}: {e}")
         return False
 
 
@@ -150,7 +153,7 @@ The ChatSift Team
         )
         return True
     except Exception as e:
-        print(f"Error sending password reset email: {e}")
+        logger.error(f"Error sending password reset email to {user.email}: {e}")
         return False
 
 # Made with Bob
