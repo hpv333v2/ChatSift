@@ -5,7 +5,9 @@
 
 ## Non-Standard Approaches
 - Django commands must be run from `backend/` directory, not project root
-- No dependency management file exists yet (requirements.txt/pyproject.toml missing)
+- Virtual environment location: `/home/krazy/Hackathons/virtualenvs/ibmhackathon/bin/activate`
+- All Python/Django/pip commands MUST be prefixed with: `source /home/krazy/Hackathons/virtualenvs/ibmhackathon/bin/activate && `
+- If virtual environment doesn't exist at that path, prompt user to create one and update this file with new path
 
 ## Critical Gotchas
 - Django REST Framework is in INSTALLED_APPS but not in any dependency file

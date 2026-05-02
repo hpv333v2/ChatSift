@@ -24,6 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-1rc^mut*g*pwj3_csoa8nz-f)3r-38xq=22x8pz+1g3gl^s(w@')
 
+# Field encryption key for encrypted model fields (Fernet key - 32 url-safe base64-encoded bytes)
+FIELD_ENCRYPTION_KEY = config('FIELD_ENCRYPTION_KEY', default='0mTIHkV1-DJuPIQg5QiMaI99LR8HakF-4Y4sJiifo7I=')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
     
     # Local apps
     'accounts',
+    'integrations',
 ]
 
 MIDDLEWARE = [
@@ -183,3 +187,20 @@ DEFAULT_FROM_EMAIL = 'noreply@chatsift.com'
 
 # Frontend URL (for email links)
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
+
+# Celery Configuration
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_ENABLE_UTC = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
+CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes
+
+# Discord OAuth Configuration
+DISCORD_CLIENT_ID = config('DISCORD_CLIENT_ID', default='')
+DISCORD_CLIENT_SECRET = config('DISCORD_CLIENT_SECRET', default='')
+DISCORD_REDIRECT_URI = config('DISCORD_REDIRECT_URI', default='http://localhost:8000/api/v1/integrations/discord/callback/')

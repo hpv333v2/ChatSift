@@ -9,13 +9,16 @@ This file provides guidance to agents when working with code in this repository.
 - **Empty Frontend**: `frontend/` directory exists but contains no files yet
 
 ## Commands (Non-Standard Locations)
-All Django commands MUST be run from `backend/` directory, not project root:
+All Django commands MUST be run from `backend/` directory with virtual environment activated:
 ```bash
-cd backend && python manage.py runserver
-cd backend && python manage.py migrate
-cd backend && python manage.py createsuperuser
-cd backend && python manage.py test
+source /home/krazy/Hackathons/virtualenvs/ibmhackathon/bin/activate && cd backend && python manage.py runserver
+source /home/krazy/Hackathons/virtualenvs/ibmhackathon/bin/activate && cd backend && python manage.py migrate
+source /home/krazy/Hackathons/virtualenvs/ibmhackathon/bin/activate && cd backend && python manage.py createsuperuser
+source /home/krazy/Hackathons/virtualenvs/ibmhackathon/bin/activate && cd backend && python manage.py test
 ```
+
+**Virtual Environment**: `/home/krazy/Hackathons/virtualenvs/ibmhackathon/bin/activate`
+- If this path doesn't exist, prompt user to create a new virtual environment and update this file
 
 ## Code Style & Conventions
 *To be documented as patterns emerge*
